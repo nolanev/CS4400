@@ -4,15 +4,15 @@ import os
 import os.path
 from thread import *
 
-class Client:
-
+joinID=0
+roomID=0
 
 def run():
 	port = 8000
 	max_conn = 5
 	jid=0
 	
-		#SETUP
+	#SETUP
 	serverSocket = socket(AF_INET,SOCK_STREAM)
 	serverSocket.allow_reuse_address=True
 	serverSocket.serve_forever()
@@ -22,19 +22,12 @@ def run():
 	print( 'The server is ready to listen \n')	  
 	serverSocket.listen(max_conn)
 	
-	
-
-	
 	while True:
                 #ACCEPT CONNECTION
-                Clientconn, Clientaddr = serverSocket.accept() #acept connection from browser
-				
-                                
-                #data = conn.recv(chatroomname, chost, cport, cname)# recieve join request
-                               
-
+                conn, addr = serverSocket.accept() #acept connection from browser
+				  
                 #START THREAD FOR CONNECTION
-                start_new_thread(new_client,(Clientconn, Clientaddr)) #start thread
+                start_new_thread(newClient,(conn, addr)) #start thread
 			
 	except error, (value, message):
 		if serverSocket:
@@ -46,19 +39,20 @@ def run():
 	#CLOSE CONNECTION 
 	serverSocket.close()
 
-def new_client(conn,addr):
+def newClient(conn,addr):
 
     while True:
 		try:
 			msg=conn.recv(BUFFERSIZE).decode()
-			if msg #if there is a message in the buffer
+			if msg #if there is a message in the buffer decide what to do with it
 				
 					if #message is join
-					
+					#add_client
 					elif #message is leav
-					
+					#remove Client
 					elif #message id disconnect
-		
+					#close socket
+					
 
         except Exception as e:
             print(e.with_traceback())
@@ -76,15 +70,34 @@ def new_client(conn,addr):
 
     conn.close()
 	
-def add_Client(msg, conn, addr)
-	#parse message
-	joinId=jid
-	jid =jid +1
-	new_client= Client(clientName, conn, addr, joinId)
+def addClient(msg, conn, addr):
+
+	#parse to find client name
+	clientName = parse(msg)
+		
+	#create new client obj
+	newClient= Client(clientName, conn, addr, joinId)
+	joinID++ #join id for next client
+	return newClient
+
+def joinRoom(msg, client):
+	roomName= parse(msg)	
+	#chatroom =Chatroom(roomName, roomID) that would be craeting a new chatroom
+	client.roomID=roomID
+	#creat room id
+	if !chatrooms[roomid]:
+		#error
+	else:
+		chatroom.addClient(client)
+		roomID++ #create new roomid
 	
-	#send message to chatroom
-	#clientSocket.send("JOIN_CHATROOM: ", chatroomname)
-	#clientSocket.send(" CLIENT_IP: ", host)
-	#clientSocket.send(" PORT: ",port)
-	#clientSocket.send(" CLIENT_NAME: ", myname)
+def removeClient(msg, conn, addr):
+	#remvoe client from room
+	#parse
+	#delete
+	fo
 	
+	
+	
+if __name__ == "__main__":
+    run()
