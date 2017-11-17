@@ -4,29 +4,21 @@ import os
 import os.path
 from thread import *
 
+ #class client
 
-def main():
-        chatroomname= "room 1"
-        myname= "Eva"
-	port = 8000
-	host = localhost
-	data=(chatroomname, host, port, myname)
-	try:
-		#SETUP AND CONNECT
-		clientSocket = socket(AF_INET,SOCK_STREAM)
-		clientSocket.connect(host, port)
+class Client:
+    def __init__(self, handle, conn, addr,join_id):
+        self.handle = handle
+        self.conn = conn
+        self.addr = addr
+		self.join_id = join_id
+        
+		
+    def __str__(self):
+        return self.join_id
 
-	except error, (value, message):
-		if clientSocket:
-			clientSocket.close()
-	       	print "Could not open socket:", message
-	  	sys.exit(1)
-	#clientSocket.send("JOIN_CHATROOM: ", chatroomname)
-	#clientSocket.send(" CLIENT_IP: ", host)
-	#clientSocket.send(" PORT: ",port)
-	#clientSocket.send(" CLIENT_NAME: ", myname)
-	clientSocket.send(data)
-		)
-	
-	#CLOSE CONNECTION 
-	clientSocket.close()
+    def __eq__(self, other):
+        if isinstance(other, self.__class__):
+            return self.join_id == other.join_id    #what is this for??
+
+        return False
