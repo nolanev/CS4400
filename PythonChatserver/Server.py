@@ -10,7 +10,7 @@ roomID=0
 def run():
 	port = 8000
 	max_conn = 5
-	jid=0
+	ip= #my ip
 	
 	#SETUP
 	serverSocket = socket(AF_INET,SOCK_STREAM)
@@ -34,41 +34,43 @@ def run():
 			serverSocket.close()
 	       	print "Could not open socket:", message
 	  	sys.exit(1) 
-
 	
 	#CLOSE CONNECTION 
 	serverSocket.close()
 
 def newClient(conn,addr):
-
+	#here is where I should crete my client obj?
     while True:
 		try:
 			msg=conn.recv(BUFFERSIZE).decode()
 			if msg #if there is a message in the buffer decide what to do with it
-				
-					if #message is join
-					#add_client
-					elif #message is leav
-					#remove Client
-					elif #message id disconnect
-					#close socket
+					if parseHelo(msg) #helo
+						sendHelo(ip, port,conn)
+					elif parseKill(msg)#kill
+						sys.exit(1)
+					elif parseJoin(msg)#message is join
+						if #client is new
+							addClient(msg, conn, addr
+							#add client
+						joinRoom(msg, client)#joinroom
+					elif parseExit(msg) #message is exit room
+						removeClient(msg, conn, addr)
+					elif parseDisconnect(msg)#message is disconnect
+						#delete client
+						#close socket
+					elif parseMessage(msg)#message is message
+						sendMessage(conn,chatroom)#broadcast
+					else 
+						sendError(conn, parseError(msg))#error description
 					
 
         except Exception as e:
             print(e.with_traceback())
             break
 
-		
-                         
-        #JOINED_CHATROOM: [chatroom name]
-        #SERVER_IP: [IP address of chat room]
-        #PORT: [port number of chat room]
-        #ROOM_REF: [integer that uniquely identifies chat room on server]
-        #JOIN_ID: [integer that uniquely identifies client joining
+	conn.close()
+	
 
-        #todo send message to chatroom
-
-    conn.close()
 	
 def addClient(msg, conn, addr):
 
@@ -93,10 +95,12 @@ def joinRoom(msg, client):
 	
 def removeClient(msg, conn, addr):
 	#remvoe client from room
+	#sendExit(conn, chatroom, client)
 	#parse
 	#delete
 	fo
 	
+def boradcast(msg):
 	
 	
 if __name__ == "__main__":
