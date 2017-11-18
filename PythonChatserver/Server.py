@@ -6,6 +6,8 @@ from thread import *
 
 joinID=0
 roomID=0
+chatrooms[]
+clients[]
 
 def run():
 	port = 8000
@@ -38,30 +40,34 @@ def run():
 	#CLOSE CONNECTION 
 	serverSocket.close()
 
+
+
 def newClient(conn,addr):
-	#here is where I should crete my client obj?
+
+	client= new Client
+	client=NULL #empty client is this being initialised correctly
+	
     while True:
 		try:
 			msg=conn.recv(BUFFERSIZE).decode()
 			if msg #if there is a message in the buffer decide what to do with it
-					if parseHelo(msg) #helo
-						sendHelo(ip, port,conn)
-					elif parseKill(msg)#kill
-						sys.exit(1)
-					elif parseJoin(msg)#message is join
-						if #client is new
-							addClient(msg, conn, addr
-							#add client
-						joinRoom(msg, client)#joinroom
-					elif parseExit(msg) #message is exit room
-						removeClient(msg, conn, addr)
-					elif parseDisconnect(msg)#message is disconnect
-						#delete client
-						#close socket
-					elif parseMessage(msg)#message is message
-						sendMessage(conn,chatroom)#broadcast
-					else 
-						sendError(conn, parseError(msg))#error description
+				if checkHelo(msg): #helo
+					sendHelo(ip, port,conn)
+				elif checkKill(msg):#kill
+					sys.exit(1)
+				elif checkJoin(msg): #join
+					if (client=NULL):
+						client=addClient(msg, conn, addr)
+					joinRoom(msg, client)#joinroom
+				elif checkExit(msg): #message is exit room
+					removeClient(msg, conn, addr)
+				elif checkDisconnect(msg):#message is disconnect  #TODO:Disconnect
+					#delete client
+					#close socket
+				elif checkMessage(msg):#message is message
+					sendMessage(conn,)#broadcast
+				elif (checkError(msg) !=0): #TODO make up some errors (do we get a list?)
+					sendError(conn, checkError(msg))#error description
 					
 
         except Exception as e:
@@ -73,35 +79,42 @@ def newClient(conn,addr):
 
 	
 def addClient(msg, conn, addr):
-
 	#parse to find client name
-	clientName = parse(msg)
+	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
 		
 	#create new client obj
-	newClient= Client(clientName, conn, addr, joinId)
-	joinID++ #join id for next client
+	joinID= getID(clientName)
+	newClient= Client(clientName, conn, addr, joinID)
+	clients[joinID]=newClient #may move this
+	#joinID++ #join id for next client
 	return newClient
 
-def joinRoom(msg, client):
-	roomName= parse(msg)	
-	#chatroom =Chatroom(roomName, roomID) that would be craeting a new chatroom
-	client.roomID=roomID
-	#creat room id
-	if !chatrooms[roomid]:
-		#error
-	else:
-		chatroom.addClient(client)
-		roomID++ #create new roomid
+def joinRoom(msg, client): #TODO: Look at how Im making roomid
+	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
+	#need to be able to check room id from name here
+	#derive roomid from name?
+	roomID=getID(chatroomName)
+	if !chatrooms[roomID]: #if chatroom doesnt exist yet
+		chatroom = new Chatroom(chatroomName, roomID)
+		chatrooms[roomID]=chatroom
+	chatroom.addClient(client)
+	roomID++ #create new roomid
 	
 def removeClient(msg, conn, addr):
-	#remvoe client from room
-	#sendExit(conn, chatroom, client)
-	#parse
-	#delete
-	fo
-	
-def boradcast(msg):
-	
+	roomRef, joinID, clientName parseExit(msg)
+	chatrooms[roomref]=chatroom
+	clients[joinID]=client
+	chatrooms.removeClient(client)
+	client.joinID=0
+	sendExit(conn, chatroom, client)
+		
+def getID(name):
+	id=0
+	for (in in lengthof(name)):
+		temp=temp+ (int(name[i])^i)
+		
+	id= temp%1000
+	return id
 	
 if __name__ == "__main__":
     run()
