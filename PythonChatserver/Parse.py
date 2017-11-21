@@ -1,59 +1,61 @@
 #throw io exception??
-
+from Client import Client
+from Chatroom import Chatroom
 ##########KILL##########
 def	checkKill(msg):	
-	if match ("KILL_SERVICE\n",msg)
+	if match ("KILL_SERVICE\n",msg):
 		return True
-	else return False
+	else: return False
 
 ##########HELO##########
 def	checkHelo(msg):
-	if match ("HELO text\n",msg)
+	if match ("HELO text\n",msg):
 		return True
-	else return False
+	else: return False
 def sendHelo(ip, port, conn):
 	#"HELO text\nIP:[ip address]\nPort:[port number]\nStudentID:[your student ID]\n"
-	String HELOmsg = "HELO text" 
+	HELOmsg = "HELO text" 
 	+ "\n IP: " + ip #this is my ip 
 	+ "\n Port: " + port #this is my port num
 	+ "\n StudentID: 14335043"
 	conn.send(HELOmsg)
-	}
+	
 
 ##########JOIN##########
 def	checkJoin(msg):
-	if match("JOIN_CHATROOM: (\w+\s*)+\nCLIENT_IP: (\d)\nPORT: (\d)\nCLIENT_NAME: (\w+\s*)+\n",msg)
+	if match("JOIN_CHATROOM: (\w+\s*)+\nCLIENT_IP: (\d)\nPORT: (\d)\nCLIENT_NAME: (\w+\s*)+\n",msg):
 		return True
-	else return False
+	else: return False
 def parseJoin(msg):
 	splitMessage = msg.split('\n')
 	#JOIN_CHATROOM: [chatroom name]
-    chatroomName = splitMessage[0].split(':')[1].strip()
+	chatroomName = splitMessage[0].split(':')[1].strip()
 	#CLIENT_IP: [IP Address of client if UDP | 0 if TCP]
 	clientIP =splitMessage[1].split(':')[1].strip()
 	#PORT: [port number of client if UDP | 0 if TCP]
 	clientPort=splitMessage[2].split(':')[1].strip()
 	#CLIENT_NAME: [string Handle to identifier client user]
-    clientName = splitMessage[3].split(':')[1].strip()
-   	return chatroomName, clientIP, clientPort, clientName
+	#CLIENT_NAME: [string Handle to identifier client user]
+	clientName = splitMessage[3].split(':')[1].strip()
+	return chatroomName, clientIP, clientPort, clientName
 def sendJoin(conn, chatroom, client):
 	joinMsg = "JOINED_CHATROOM: " + chatroom.roomName 
-	+ "\n SERVER_IP: " [IP address of chat room] #???
-	+ "\n PORT: " + [port number of chat room] #???
+	+ "\n SERVER_IP: 134.226.214.250"# [] #???
+	+ "\n PORT: 8000" #+ [port number of chat room] #???
 	+ "\n ROOM_REF: " + chatroom.roomID
-	+ "\n JOIN_ID: " + client.joinID
+	+ "\n JOIN_ID: " + client.join_id
 	conn.send(joinMsg)
 
 ##########ERROR##########	
 def	checkError(msg):
-	if !match("ERROR_CODE: (\d) +\n)",msg)
-		return 0
-	else
+	if match("ERROR_CODE: (\d) +\n)",msg):
 		errorcode= msg.split(':')[1].strip()
+	else:
+		return 0
 	return errorCode
 def sendError(conn, errorcode):
 	errorMsg=''
-	if errorcode ==1
+	if errorcode ==1:
 		errorMsg= "ERROR_DESCRIPTION: "
 	conn.send(errorMsg)
 
@@ -61,7 +63,7 @@ def sendError(conn, errorcode):
 def	checkExit(msg):
 	if match("LEAVE_CHATROOM: (\w+\s*)+\n JOIN_ID: (\d)+\n CLIENT_NAME: (\w+\s*)+\n",msg):
 		return True
-	else return False	
+	else: return False	
 def parseExit(msg):
 	splitMessage = msg.split('\n')
 	#LEAVE_CHATROOM: [ROOM_REF]
@@ -73,14 +75,14 @@ def parseExit(msg):
 	return roomRef, joinID, clientName
 def sendExit(conn, chatroom, client):
 	exitMsg= "#LEFT_CHATROOM: " +chatroom.roomID
-	+ "\n JOIN_ID: " client.joinID
+	+ "\n JOIN_ID: " + client.join_id
 	conn.send(exitMsg)
 
 ##########DISCONNECT##########	
 def	checkDisconnect(msg):
-	if match("DISCONNECT: (\d) +\n PORT: (\d) +\n CLIENT_NAME: (\w+\s*)+\n",msg)
+	if match("DISCONNECT: (\d) +\n PORT: (\d) +\n CLIENT_NAME: (\w+\s*)+\n",msg):
 		return True
-	else return False
+	else: return False
 def parseDisconnect(msg):
 	splitMessage = msg.split('\n')
 	#DISCONNECT: [IP address of client if UDP | 0 if TCP]
@@ -98,9 +100,9 @@ def parseDisconnect(msg):
 
 ##########BROADCAST##########	
 def	checkMessage(msg):
-	if match("CHAT: (\d) +\n JOIN_ID: (\d)+\n CLIENT_NAME: (\w+\s*)+\n MESSAGE: (\w+\s*)+\n\n",msg)
+	if match("CHAT: (\d) +\n JOIN_ID: (\d)+\n CLIENT_NAME: (\w+\s*)+\n MESSAGE: (\w+\s*)+\n\n",msg):
 		return True
-	else return False
+	else: return False
 def parseMessage(msg):
 	splitMessage = msg.split('\n')
 	#CHAT: [ROOM_REF]
