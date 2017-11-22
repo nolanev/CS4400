@@ -14,5 +14,5 @@ class Client:
 	def __str__(self):
 		return self.join_ID
 		
-	def __del__(self):
-		print "deleted client"
+	#def __del__(self):
+		#print("deleted client")

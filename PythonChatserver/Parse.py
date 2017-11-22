@@ -3,21 +3,24 @@ from Client import Client
 from Chatroom import Chatroom
 ##########KILL##########
 def	checkKill(msg):	
-	if match ("KILL_SERVICE\n",msg):
+	if msg=="KILL_SERVICE\n":
 		return True
 	else: return False
 
 ##########HELO##########
 def	checkHelo(msg):
-	if match ("HELO text\n",msg):
+	print("check helo")
+	if msg=="HELO text\n":
+		print("returning true")
 		return True
-	else: return False
-def sendHelo(ip, port, conn):
+	else: 
+		print("returning false")
+		return False
+def sendHelo(conn, addr,ip,port):
 	#"HELO text\nIP:[ip address]\nPort:[port number]\nStudentID:[your student ID]\n"
-	HELOmsg = "HELO text" 
-	+ "\n IP: " + ip #this is my ip 
-	+ "\n Port: " + port #this is my port num
-	+ "\n StudentID: 14335043"
+	HELOmsg = "HELO text \nIP: " + str(ip) + "\nPort: " + str(port) + "\nStudentID: 14335043"
+	#HELOmsg=HELOmsg.encode()
+	
 	conn.sendall(HELOmsg.encode())
 	
 
@@ -38,12 +41,12 @@ def parseJoin(msg):
 	#CLIENT_NAME: [string Handle to identifier client user]
 	clientName = splitMessage[3].split(':')[1].strip()
 	return chatroomName, clientIP, clientPort, clientName
-def sendJoin(conn, chatroom, client):
+def sendJoin(conn, chatroom, client, ip, port):
 	joinMsg = "JOINED_CHATROOM: " + chatroom.roomName 
-	+ "\n SERVER_IP: 134.226.214.250"# [] #???
-	+ "\n PORT: 8000" #+ [port number of chat room] #???
-	+ "\n ROOM_REF: " + chatroom.roomID
-	+ "\n JOIN_ID: " + client.join_id
+	+ "\nSERVER_IP: " + str(ip)
+	+ "\nPORT: " +  str(port)
+	+ "\nROOM_REF: " + chatroom.roomID
+	+ "\nJOIN_ID: " + client.join_id
 	conn.sendall(joinMsg.encode())
 
 ##########ERROR##########	
@@ -61,7 +64,7 @@ def sendError(conn, errorcode):
 
 ##########EXIT##########		
 def	checkExit(msg):
-	if match("LEAVE_CHATROOM: (\w+\s*)+\n JOIN_ID: (\d)+\n CLIENT_NAME: (\w+\s*)+\n",msg):
+	if match("LEAVE_CHATROOM: (\w+\s*)+\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\n",msg):
 		return True
 	else: return False	
 def parseExit(msg):
@@ -75,12 +78,12 @@ def parseExit(msg):
 	return roomRef, joinID, clientName
 def sendExit(conn, chatroom, client):
 	exitMsg= "#LEFT_CHATROOM: " +chatroom.roomID
-	+ "\n JOIN_ID: " + client.join_id
+	+ "\nJOIN_ID: " + client.join_id
 	conn.sendall(exitMsg.encode())
 
 ##########DISCONNECT##########	
 def	checkDisconnect(msg):
-	if match("DISCONNECT: (\d) +\n PORT: (\d) +\n CLIENT_NAME: (\w+\s*)+\n",msg):
+	if match("DISCONNECT: (\d) +\nPORT: (\d) +\nCLIENT_NAME: (\w+\s*)+\n",msg):
 		return True
 	else: return False
 def parseDisconnect(msg):
@@ -99,7 +102,7 @@ def parseDisconnect(msg):
 
 ##########BROADCAST##########	
 def	checkMessage(msg):
-	if match("CHAT: (\d) +\n JOIN_ID: (\d)+\n CLIENT_NAME: (\w+\s*)+\n MESSAGE: (\w+\s*)+\n\n",msg):
+	if match("CHAT: (\d) +\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\nMESSAGE: (\w+\s*)+\n\n",msg):
 		return True
 	else: return False
 def parseMessage(msg):
@@ -117,7 +120,7 @@ def sendMessage(conn,chatroom, message):
 	roomRef, joinID, clientName, message =parseMessage(msg)
 	#need to be able to get room ref from chatroomname chatrooom.getref(name)??
 	messageMsg= "CHAT: " + roomID
-	+ "\n CLIENT_NAME: " + clientName
-	+ "\n MESSAGE: " + message
+	+ "\nCLIENT_NAME: " + clientName
+	+ "\nMESSAGE: " + message
 	conn.sendall(message.encode()) #maybe a diffrent conn becasue we are broadcasting to all conns??
 	
