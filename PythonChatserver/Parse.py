@@ -18,7 +18,7 @@ def sendHelo(ip, port, conn):
 	+ "\n IP: " + ip #this is my ip 
 	+ "\n Port: " + port #this is my port num
 	+ "\n StudentID: 14335043"
-	conn.send(HELOmsg)
+	conn.sendall(HELOmsg.encode())
 	
 
 ##########JOIN##########
@@ -44,7 +44,7 @@ def sendJoin(conn, chatroom, client):
 	+ "\n PORT: 8000" #+ [port number of chat room] #???
 	+ "\n ROOM_REF: " + chatroom.roomID
 	+ "\n JOIN_ID: " + client.join_id
-	conn.send(joinMsg)
+	conn.sendall(joinMsg.encode())
 
 ##########ERROR##########	
 def	checkError(msg):
@@ -57,7 +57,7 @@ def sendError(conn, errorcode):
 	errorMsg=''
 	if errorcode ==1:
 		errorMsg= "ERROR_DESCRIPTION: "
-	conn.send(errorMsg)
+	conn.sendall(errorMsg.encode())
 
 ##########EXIT##########		
 def	checkExit(msg):
@@ -76,7 +76,7 @@ def parseExit(msg):
 def sendExit(conn, chatroom, client):
 	exitMsg= "#LEFT_CHATROOM: " +chatroom.roomID
 	+ "\n JOIN_ID: " + client.join_id
-	conn.send(exitMsg)
+	conn.sendall(exitMsg.encode())
 
 ##########DISCONNECT##########	
 def	checkDisconnect(msg):
@@ -92,7 +92,6 @@ def parseDisconnect(msg):
 	#CLIENT_NAME: [string handle to identify client user]
 	clientName=splitMessage[3].split(':')[1].strip()
 	
-	#really from here i want to be able to rturn my client object as below but i need join id
 	client=clients[joinID]
 	return client
 	
@@ -120,5 +119,5 @@ def sendMessage(conn,chatroom, message):
 	messageMsg= "CHAT: " + roomID
 	+ "\n CLIENT_NAME: " + clientName
 	+ "\n MESSAGE: " + message
-	conn.send(message) #maybe a diffrent conn becasue we are broadcasting to all conns
+	conn.sendall(message.encode()) #maybe a diffrent conn becasue we are broadcasting to all conns??
 	
