@@ -19,8 +19,8 @@ max_conn = 5
 
 def run():
 	
-	#myip= "134.226.214.250" #should be reading the ip of the machine ist run on
-	myip=gethostbyname('localhost') 
+	myip= "134.226.44.50" #should be reading the ip of the machine ist run on
+	#myip=gethostbyname('localhost') 
 	print(myip)
 	
 	#SETUP
