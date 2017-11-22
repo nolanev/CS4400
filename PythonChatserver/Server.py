@@ -26,7 +26,7 @@ def run():
 	#SETUP
 	serverSocket = socket(AF_INET,SOCK_STREAM)
 	serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-	serverSocket.bind(myip, port))
+	serverSocket.bind((myip, port))
 	
 	#WAIT FOR CONNECTION
 	print( 'The server is ready to listen \n')	  
