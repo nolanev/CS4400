@@ -3,22 +3,20 @@ from Client import Client
 from Chatroom import Chatroom
 ##########KILL##########
 def	checkKill(msg):	
-	if msg=="KILL_SERVICE\n":
+	if "KILL" in msg:
 		return True
 	else: return False
 
 ##########HELO##########
 def	checkHelo(msg):
-	print("check helo")
-	if msg=="HELO text\n":
-		print("returning true")
+	
+	if "HELO" in msg:
 		return True
 	else: 
-		print("returning false")
 		return False
 def sendHelo(conn, addr,ip,port):
-	#"HELO text\nIP:[ip address]\nPort:[port number]\nStudentID:[your student ID]\n"
-	HELOmsg = "HELO text \nIP: " + str(ip) + "\nPort: " + str(port) + "\nStudentID: 14335043"
+	#"HELO BASE_TEST\nIP:[ip address]\nPort:[port number]\nStudentID:[your student ID]\n"
+	HELOmsg = "HELO BASE_TEST\nIP: " + str(ip) + "\nPort: " + str(port) + "\nStudentID: 14335043"
 	#HELOmsg=HELOmsg.encode()
 	
 	conn.sendall(HELOmsg.encode())
@@ -26,7 +24,8 @@ def sendHelo(conn, addr,ip,port):
 
 ##########JOIN##########
 def	checkJoin(msg):
-	if match("JOIN_CHATROOM: (\w+\s*)+\nCLIENT_IP: (\d)\nPORT: (\d)\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	#if match("JOIN_CHATROOM: (\w+\s*)+\nCLIENT_IP: (\d)\nPORT: (\d)\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	if "JOIN_CHATROOM:" in msg:
 		return True
 	else: return False
 def parseJoin(msg):
@@ -64,7 +63,8 @@ def sendError(conn, errorcode):
 
 ##########EXIT##########		
 def	checkExit(msg):
-	if match("LEAVE_CHATROOM: (\w+\s*)+\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	#if match("LEAVE_CHATROOM: (\w+\s*)+\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	if "LEAVE" in msg:	
 		return True
 	else: return False	
 def parseExit(msg):
@@ -83,7 +83,8 @@ def sendExit(conn, chatroom, client):
 
 ##########DISCONNECT##########	
 def	checkDisconnect(msg):
-	if match("DISCONNECT: (\d) +\nPORT: (\d) +\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	#if match("DISCONNECT: (\d) +\nPORT: (\d) +\nCLIENT_NAME: (\w+\s*)+\n",msg):
+	if "DISCONNECT" in msg:
 		return True
 	else: return False
 def parseDisconnect(msg):
@@ -102,7 +103,8 @@ def parseDisconnect(msg):
 
 ##########BROADCAST##########	
 def	checkMessage(msg):
-	if match("CHAT: (\d) +\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\nMESSAGE: (\w+\s*)+\n\n",msg):
+	#if match("CHAT: (\d) +\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\nMESSAGE: (\w+\s*)+\n\n",msg):
+	if "CHAT" in msg:
 		return True
 	else: return False
 def parseMessage(msg):

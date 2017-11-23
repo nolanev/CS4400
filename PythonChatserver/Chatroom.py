@@ -11,15 +11,9 @@ class Chatroom:
 
 	def addclient(self, client):
 		#if client not in self.clients
-		client=self.clients(client.join_ID)
-		print("client has been added")
-			#else:
-				#error
-	
+		self.clients[client.join_ID]=client ##getting stuck at this line
+		
 	
 	def removeclient(self, client):
 		#if client in self.clients
-		client=self.clients(client.join_ID)
-					#removed message
-			#else:
-					#error
+		del self.clients[client.join_ID]

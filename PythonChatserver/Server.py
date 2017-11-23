@@ -11,8 +11,8 @@ from Parse import *
 
 #C:\Python34\python.exe "C:\Users\evakn\Documents\CS4400 Internet Applications\HERE\CS4400\PythonChatserver\Server.py"
 
-chatrooms={}
-clients={}
+chatrooms={} 
+clients={} #dictionaries of chatroom and client objcets with their ID number as a key
 #host=0.0.0.0
 port = int(sys.argv[1])
 max_conn = 5
@@ -28,6 +28,7 @@ def run():
 	serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 	serverSocket.bind((gethostbyname(gethostname()), port))
 	ip=(gethostbyname(gethostname()))
+	#print(ip)
 	
 	#WAIT FOR CONNECTION
 	print( 'The server is ready to listen \n')	  
@@ -42,7 +43,7 @@ def run():
 			conn, addr = serverSocket.accept() #acept connection from browser
 			
 			#start_new_thread(newClient,(conn, addr)) #start thread
-			print( 'Starting new thread \n')	
+			#print( 'Starting new thread \n')	
 			threading.Thread(target=newClient, args=(conn, addr,ip,port)).start()
 		
 		except Exception as e:
@@ -62,22 +63,24 @@ def newClient(conn,addr,ip,port):
 		
 	while True:
 		try:
-			msg=conn.recv(1024).decode()				
+			msg=conn.recv(1024).decode()
+			print("RECIEVED: ")				
 			print(msg)
 			
 			if (msg): #if there is a message in the buffer decide what to do with it
 				
 				if checkHelo(msg): #helo
-					print("helo returned true")
+					#print("helo returned true")
 					sendHelo(conn,addr,ip,port)
 					
 				elif checkKill(msg):#kill
 					sys.exit(1)
 					
 				elif checkJoin(msg): #join
-					print("gotjoin")
+					#print("gotjoin")
 					if (client.join_ID==0): #if client has been not been initalised
 						client=addClient(msg, conn, addr)
+					#NOT GETTING THIS FAR
 					joinRoom(msg, client)#joinroom#
 					
 					
@@ -103,29 +106,38 @@ def newClient(conn,addr,ip,port):
 
 	
 def addClient(msg, conn, addr):
+
 	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
-	#create new client obj
+
 	joinID= getID(clientName)	
+		
 	newClient= Client(clientName, conn, addr, joinID)
+
 	clients[joinID]=newClient #ad client to client list
+
 	return newClient
 
 def joinRoom(msg, client): 
+	
 	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
 	roomID=getID(chatroomName)
-	if (chatrooms[roomID]==""): #if chatroom doesnt exist yet
+	if roomID not in chatrooms: #if chatroom doesnt exist yet
 		chatroom = Chatroom(chatroomName, roomID)
-		chatrooms[roomID]=chatroom
-	chatroom.addclient(client)
+		chatrooms[roomID]=chatroom #hopefullshould run idk		
+		
+	
+	chatroom.addclient(client) 
+	
 	sendJoin(conn, chatroom, client, clientIP, clientPort)
 	
 	
 def removeClient(msg, conn, addr):
 	roomID, joinID, clientName= parseExit(msg)
-	chatroom=chatrooms[roomID]
+	chatroom=chatrooms[roomID] ###cant really do this
 	client=clients[joinID]
 	chatrooms.removeclient(client)
 	sendExit(conn, chatroom, client)
+	
 	
 def broadcastmessage(msg,conn):
 	roomID, joinID, clientName, message=parseMessage(msg)
@@ -134,12 +146,13 @@ def broadcastmessage(msg,conn):
 	sendMessage(conn,chatroom, msg)
 			
 def getID(name):
-	id=0
+	idval=0
+	temp=0
 	for i in name:
-		temp=temp+ (int(name[i])^i)
-		
-	id= temp%1000
-	return id
+		temp=temp+ ord(i)
+	idval= temp%1000
+	#print(idval)
+	return idval
 	
 
 if __name__ == "__main__":
