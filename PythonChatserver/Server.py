@@ -84,6 +84,10 @@ def newClient(conn,addr,ip,port):
 					
 					
 					joinRoom(msg,conn, client,ip)#joinroom#
+					
+					print("yep")
+					helloMsg ="CHAT: " #+ str(client.name)
+					conn.sendall(helloMsg.encode())
 					print("yep")
 					
 				elif checkExit(msg): #message is exit room
@@ -135,11 +139,11 @@ def joinRoom(msg, conn, client,ip):
 		
 	chatroom.addclient(client) 
 		
-	joinMsg = "JOINED_CHATROOM: " + str(chatroom.roomName) + "\nSERVER_IP: "+ str(ip) + "\nPORT: " + str(clientPort)+ "\nROOM_REF: " + str(roomID) + "\nJOIN_ID: " + str(client.join_ID)
+	joinMsg = "JOINED_CHATROOM: " + str(chatroom.roomName) + "\nSERVER_IP: "+ str(ip) + "\nPORT: " + str(clientPort)+ "\nROOM_REF: " + str(roomID) + "\nJOIN_ID: " + str(roomID)  + "\n"
 	
 	print(joinMsg)	
 	conn.sendall(joinMsg.encode())
-	print("sent")
+	
 	#sendJoin(conn, chatroom, client, clientIP, clientPort)
 	#sendJoin(conn, chatroom, client, ip, port):
 	
