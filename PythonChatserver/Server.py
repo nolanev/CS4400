@@ -63,6 +63,7 @@ def newClient(conn,addr,ip,port):
 		
 	while True:
 		try:
+			print("try")
 			msg=conn.recv(1024).decode()
 			print("RECIEVED: ")				
 			print(msg)
@@ -77,12 +78,13 @@ def newClient(conn,addr,ip,port):
 					sys.exit(1)
 					
 				elif checkJoin(msg): #join
-					#print("gotjoin")
+					
 					if (client.join_ID==0): #if client has been not been initalised
 						client=addClient(msg, conn, addr)
-					#NOT GETTING THIS FAR
-					joinRoom(msg, client)#joinroom#
 					
+					
+					joinRoom(msg,conn, client,ip)#joinroom#
+					print("yep")
 					
 				elif checkExit(msg): #message is exit room
 					removeClient(msg, conn, addr)
@@ -105,7 +107,7 @@ def newClient(conn,addr,ip,port):
 	
 
 	
-def addClient(msg, conn, addr):
+def addClient(msg, conn, addr): #passes test
 
 	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
 
@@ -114,22 +116,32 @@ def addClient(msg, conn, addr):
 	newClient= Client(clientName, conn, addr, joinID)
 
 	clients[joinID]=newClient #ad client to client list
-
+	#print(newClient.name)
+	#print((clients[joinID]).name)
+	#print(newClient.join_ID)
+	
 	return newClient
 
-def joinRoom(msg, client): 
-	
+def joinRoom(msg, conn, client,ip): 
 	chatroomName, clientIP, clientPort, clientName= parseJoin(msg)
+	print
 	roomID=getID(chatroomName)
+	clientlist={}
 	if roomID not in chatrooms: #if chatroom doesnt exist yet
+	
 		chatroom = Chatroom(chatroomName, roomID)
-		chatrooms[roomID]=chatroom #hopefullshould run idk		
+	
+		chatrooms[roomID]=chatroom 		
 		
-	
 	chatroom.addclient(client) 
+		
+	joinMsg = "JOINED_CHATROOM: " + str(chatroom.roomName) + "\nSERVER_IP: "+ str(ip) + "\nPORT: " + str(clientPort)+ "\nROOM_REF: " + str(roomID) + "\nJOIN_ID: " + str(client.join_ID)
 	
-	sendJoin(conn, chatroom, client, clientIP, clientPort)
-	
+	print(joinMsg)	
+	conn.sendall(joinMsg.encode())
+	print("sent")
+	#sendJoin(conn, chatroom, client, clientIP, clientPort)
+	#sendJoin(conn, chatroom, client, ip, port):
 	
 def removeClient(msg, conn, addr):
 	roomID, joinID, clientName= parseExit(msg)

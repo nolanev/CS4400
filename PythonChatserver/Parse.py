@@ -37,15 +37,14 @@ def parseJoin(msg):
 	#PORT: [port number of client if UDP | 0 if TCP]
 	clientPort=splitMessage[2].split(':')[1].strip()
 	#CLIENT_NAME: [string Handle to identifier client user]
-	#CLIENT_NAME: [string Handle to identifier client user]
 	clientName = splitMessage[3].split(':')[1].strip()
+
 	return chatroomName, clientIP, clientPort, clientName
+
 def sendJoin(conn, chatroom, client, ip, port):
-	joinMsg = "JOINED_CHATROOM: " + chatroom.roomName 
-	+ "\nSERVER_IP: " + str(ip)
-	+ "\nPORT: " +  str(port)
-	+ "\nROOM_REF: " + chatroom.roomID
-	+ "\nJOIN_ID: " + client.join_id
+	print("here")
+	joinMsg = "JOINED_CHATROOM: " + str(chatroom.roomName) + "\nSERVER_IP: " + str(ip)+ "\nPORT: " + str(port)+ "\nROOM_REF: " + str(chatroom.roomID) + "\nJOIN_ID: " + str(client.join_id)
+	print(joinMsg)	
 	conn.sendall(joinMsg.encode())
 
 ##########ERROR##########	
@@ -102,7 +101,7 @@ def parseDisconnect(msg):
 
 
 ##########BROADCAST##########	
-def	checkMessage(msg):
+def checkMessage(msg):
 	#if match("CHAT: (\d) +\nJOIN_ID: (\d)+\nCLIENT_NAME: (\w+\s*)+\nMESSAGE: (\w+\s*)+\n\n",msg):
 	if "CHAT" in msg:
 		return True
